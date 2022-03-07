@@ -7,5 +7,4 @@ func set_card(new_card):
 	update_label()
 
 func update_label():
-	var label_text = card.suit + "\n" + card.rank
-	$CardLabel.text(label_text)
+	$CardLabel.text = str(card.get_suit()) + "\n" + str(card.get_rank())

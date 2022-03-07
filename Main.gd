@@ -24,8 +24,10 @@ func init_deck():
 
 
 func give_player_card():
-	var card = take_random_card_from_deck()
-
+	var card = preload('Card.tscn').instance()
+	card.position = $CardDeck/CardDeckSprite.position
+	card.set_card(take_random_card_from_deck())
+	add_child(card)
 	
 func take_random_card_from_deck():
 	var random_card_index = randi() % deck.size() - 1

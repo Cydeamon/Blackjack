@@ -31,7 +31,7 @@ window/size/height=360
 window/size/test_width=1280
 window/size/test_height=720
 window/stretch/mode="viewport"
-window/stretch/aspect="keep_height"
+window/stretch/aspect="keep"
 
 [physics]
 
