@@ -19,6 +19,7 @@ texture = ExtResource( 1 )
 [node name="OpponentCards" type="Node" parent="."]
 
 [node name="CardDeck" type="Area2D" parent="."]
+position = Vector2( -15, 0 )
 
 [node name="CardDeckSprite" type="Sprite" parent="CardDeck"]
 position = Vector2( 64, 192 )
