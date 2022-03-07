@@ -7,7 +7,7 @@ var rank
 
 func _init(new_suit, new_rank):
 	suit = new_suit
-	rank = new_rank
+	rank = new_rank	
 
 func get_suit():	
 	return suit
