@@ -66,14 +66,18 @@ func init_deck():
 
 # Give card to player and move it to center of screen
 func give_card_to_player():
-	var card = preload('Card.tscn').instance()
-	card.position = $CardDeck/CardDeckSprite.position
-	card.set_card(take_random_card_from_deck())
-	$CardsLayer.add_child(card)
-	player.add_card(card)
-	card.flip()
-	move_cards_to_center(get_viewport().get_visible_rect().size.y - card_height - 15, player.get_cards())
-	$PlayerPointsLabel.text = str(player.calc_points());
+	if game_is_running && !player.is_ready:
+		var card = preload('Card.tscn').instance()
+		card.position = $CardDeck/CardDeckSprite.position
+		card.set_card(take_random_card_from_deck())
+		$CardsLayer.add_child(card)
+		player.add_card(card)
+		card.flip()
+		move_cards_to_center(get_viewport().get_visible_rect().size.y - card_height - 15, player.get_cards())
+		$PlayerPointsLabel.text = str(player.calc_points());
+
+		if player.calc_points() > 21:
+			_on_ReadyButton_pressed()
 
 
 # Give card to enemy and move it to center of screen
@@ -86,7 +90,7 @@ func give_card_to_enemy():
 		$CardsLayer.add_child(card)
 		enemy.add_card(card)
 		move_cards_to_center(10, enemy.get_cards())
-		$EnemyPointsLabel.text = str(enemy.calc_points()) + "/" + str(enemy.points_limit);
+		$EnemyPointsLabel.text = str(enemy.calc_points());
 
 	
 # Get random card from deck

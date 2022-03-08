@@ -135,7 +135,6 @@ shape = SubResource( 1 )
 one_shot = true
 
 [node name="TimeoutBeforeStart" type="Timer" parent="."]
-wait_time = 2.0
 one_shot = true
 
 [node name="PlayerPointsLabel" type="Label" parent="."]
