@@ -1,7 +1,7 @@
 extends Area2D
 
 var smooth_speed = 0.287
-var move_speed = 15
+var move_speed = 10
 var move_destination = null
 var card: PlayingCard
 
@@ -23,8 +23,8 @@ func set_card(new_card):
 
 
 func update_rank():
-	var rank = str(card.get_rank()).replace("RANK_", "")
-	var suit = str(card.get_suit()).to_lower()
+	var rank = card.get_rank_str().replace("RANK_", "")
+	var suit = card.get_suit_str().to_lower()
 
 	$RankTop.text = rank
 	$RankBottom.text = rank
@@ -41,7 +41,7 @@ func update_rank():
 
 
 func update_suit():
-	var suit = str(card.get_suit()).to_lower()
+	var suit = card.get_suit_str().to_lower()
 	var image = Image.new()
 	var image_texture = ImageTexture.new()
 
