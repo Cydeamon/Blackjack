@@ -23,8 +23,12 @@ func _ready():
 
 func _process(_delta):
 	if game_is_running:
+		enemy.check_ready()
+
 		if enemy.is_ready && player.is_ready:
 			player.is_ready = false
+			enemy.show_cards()
+			$EnemyPointsLabel.show()
 			compare_results()
 
 
@@ -47,6 +51,8 @@ func init():
 
 	$TimeoutBeforeStart.start()
 	$ReadyButton.text = "READY"
+
+	$EnemyPointsLabel.hide()
 
 
 # Init deck with all possible cards
@@ -125,28 +131,33 @@ func compare_results():
 	var enemy_overdraft = enemy_score > 21
 	var player_overdraft = player_score > 21
 
+	var message
+
 	if player_overdraft && enemy_overdraft:
-		show_message("draw")
+		message = "draw"
 	elif player_overdraft && !enemy_overdraft:
-		show_message("lost")
+		message = "lost"
 	elif !player_overdraft && enemy_overdraft:
-		show_message("victory")
+		message = "victory"
 	elif player_score > enemy_score:
-		show_message("victory")
+		message = "victory"
 	else:
-		show_message("lost")
+		message = "lost"
+
+	show_message(message)
+
+	if message == "lost":
+		enemy.increase_limit()
+	else:
+		enemy.decrease_limit()
+
 
 
 func show_message(message):
-	var image = Image.new()
-	var image_texture = ImageTexture.new()
-
 	$MessageBackground.show()
 	$VictoryMessage.show()
 
-	image.load("res://assets/" + message + "_msg.png")
-	image_texture.create_from_image(image)
-	$VictoryMessage.set_texture(image_texture)
+	$VictoryMessage.set_texture(load("res://assets/" + message + "_msg.png"))
 	$AnimationPlayer.current_animation = "show_victory_message"
 	$AnimationPlayer.play()
 
