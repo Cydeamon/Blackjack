@@ -1,7 +1,7 @@
 extends Area2D
 
 var smooth_speed = 0.287
-var move_speed = 10
+var move_speed = 15
 var move_destination = null
 var card: PlayingCard
 

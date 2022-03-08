@@ -7,7 +7,7 @@ var points_limit
 var waiting = false
 var decide_timer
 var max_think_time = 5
-var min_think_time = 1
+var min_think_time = 2
     
 func _init():
     randomize()
@@ -18,8 +18,10 @@ func get_think_time():
 
 
 func ask_for_card():
-    if calc_points() < points_limit:
+    if !is_ready && calc_points() < points_limit:
         emit_signal('give_me_card')
+    else:
+        set_ready(true)
 
     decide_timer.set_wait_time(get_think_time())
     decide_timer.start()

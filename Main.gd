@@ -3,6 +3,7 @@ extends Node2D
 var deck = []				# Deck (all 50 cards)
 var deck_cards_taken = []	# Cards that was taken from deck (indexes)
 var card_height = 128
+var game_is_running = false
 
 var player = Player.new()
 var enemy = Enemy.new()
@@ -20,21 +21,37 @@ func _ready():
 	init()
 
 
+func _process(_delta):
+	if game_is_running:
+		if enemy.is_ready && player.is_ready:
+			player.is_ready = false
+			compare_results()
+
+
 ###########################################################################################
 ##################################### CUSTOM FUNCTIONS ####################################
 
 # (Re)init game
 func init():
+	game_is_running = false
+
 	deck_cards_taken = []
-	player.clear_cards()
-	enemy.clear_cards()
+	player.reset()
+	enemy.reset()
+
+	$PlayerPointsLabel.text = '0'
+	$EnemyPointsLabel.text = '0'
+
+	$MessageBackground.hide()
+	$VictoryMessage.hide()
+
+	$TimeoutBeforeStart.start()
+	$ReadyButton.text = "READY"
+
 
 # Init deck with all possible cards
 func init_deck():
 	deck = []
-
-	# for i in 50:
-	# 	deck.push_back(PlayingCard.new("CLUBS", "RANK_A"))
 
 	for suit in PlayingCard.Suit:
 		for rank in PlayingCard.Rank:
@@ -46,7 +63,7 @@ func give_card_to_player():
 	var card = preload('Card.tscn').instance()
 	card.position = $CardDeck/CardDeckSprite.position
 	card.set_card(take_random_card_from_deck())
-	add_child(card)
+	$CardsLayer.add_child(card)
 	player.add_card(card)
 	move_cards_to_center(get_viewport().get_visible_rect().size.y - card_height - 15, player.get_cards())
 	$PlayerPointsLabel.text = str(player.calc_points());
@@ -54,13 +71,14 @@ func give_card_to_player():
 
 # Give card to enemy and move it to center of screen
 func give_card_to_enemy():
-	var card = preload('Card.tscn').instance()
-	card.position = $CardsSpawnPosition.position
-	card.set_card(take_random_card_from_deck())
-	add_child(card)
-	enemy.add_card(card)
-	move_cards_to_center(10, enemy.get_cards())
-	$EnemyPointsLabel.text = str(enemy.calc_points()) + "/" + str(enemy.points_limit);
+	if game_is_running:
+		var card = preload('Card.tscn').instance()
+		card.position = $CardsSpawnPosition.position
+		card.set_card(take_random_card_from_deck())
+		$CardsLayer.add_child(card)
+		enemy.add_card(card)
+		move_cards_to_center(10, enemy.get_cards())
+		$EnemyPointsLabel.text = str(enemy.calc_points()) + "/" + str(enemy.points_limit);
 
 	
 # Get random card from deck
@@ -97,10 +115,73 @@ func move_cards_to_center(draw_y, cards):
 
 		draw_y += 2
 
+# Compare results of players
+func compare_results():
+	var player_score = player.calc_points()
+	var enemy_score = enemy.calc_points()
+
+	var enemy_overdraft = enemy_score > 21
+	var player_overdraft = player_score > 21
+
+	if player_overdraft && enemy_overdraft:
+		show_message("draw")
+	elif player_overdraft && !enemy_overdraft:
+		show_message("lost")
+	elif !player_overdraft && enemy_overdraft:
+		show_message("victory")
+	elif player_score > enemy_score:
+		show_message("victory")
+	else:
+		show_message("lost")
+
+
+func show_message(message):
+	var image = Image.new()
+	var image_texture = ImageTexture.new()
+
+	$MessageBackground.show()
+	$VictoryMessage.show()
+
+	image.load("res://assets/" + message + "_msg.png")
+	image_texture.create_from_image(image)
+	$VictoryMessage.set_texture(image_texture)
+	$AnimationPlayer.current_animation = "show_victory_message"
+	$AnimationPlayer.play()
+
 			
 ###########################################################################################
 ######################################### SIGNALS #########################################
 
 func _on_CardDeck_input_event(_viewport:Node, event:InputEvent, _shape_idx:int):
 	if event is InputEventMouseButton && event.button_index == 1 && event.is_pressed():
-		give_card_to_player()
+		if game_is_running:
+			give_card_to_player()
+
+
+func _on_ReadyButton_pressed():
+	player.set_ready(true)
+	$ReadyButton.text = "WAITING"
+
+
+func _on_AnimationPlayer_animation_finished(anim_name:String):
+	if anim_name == "show_victory_message":
+		$AnimationPlayer.seek(0)
+		move_cards_to_center(-200, enemy.get_cards())
+		move_cards_to_center(get_viewport().get_visible_rect().size.y + 200, player.get_cards())
+
+		var t = Timer.new()
+		t.set_wait_time(0.5)
+		t.set_one_shot(true)
+		self.add_child(t)
+		t.start()
+		yield(t, "timeout")
+		init()
+
+
+func _on_TimeoutBeforeStart_timeout():
+	game_is_running = true
+
+	give_card_to_player()
+	give_card_to_player()
+	give_card_to_enemy()
+	give_card_to_enemy()
