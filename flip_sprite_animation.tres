@@ -1,0 +1,14 @@
+[gd_resource type="SpriteFrames" load_steps=5 format=2]
+
+[ext_resource path="res://assets/flip_2.png" type="Texture" id=1]
+[ext_resource path="res://assets/flip_1.png" type="Texture" id=2]
+[ext_resource path="res://assets/flip_3.png" type="Texture" id=3]
+[ext_resource path="res://assets/flip_4.png" type="Texture" id=4]
+
+[resource]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 1 ), ExtResource( 3 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "flip",
+"speed": 9.0
+} ]

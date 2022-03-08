@@ -65,6 +65,7 @@ func give_card_to_player():
 	card.set_card(take_random_card_from_deck())
 	$CardsLayer.add_child(card)
 	player.add_card(card)
+	card.flip()
 	move_cards_to_center(get_viewport().get_visible_rect().size.y - card_height - 15, player.get_cards())
 	$PlayerPointsLabel.text = str(player.calc_points());
 
@@ -74,6 +75,7 @@ func give_card_to_enemy():
 	if game_is_running:
 		var card = preload('Card.tscn').instance()
 		card.position = $CardsSpawnPosition.position
+		card.set_front_face_visible(false)
 		card.set_card(take_random_card_from_deck())
 		$CardsLayer.add_child(card)
 		enemy.add_card(card)
