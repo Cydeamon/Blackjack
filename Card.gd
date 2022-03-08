@@ -68,6 +68,7 @@ func update_rank():
 
 func update_suit():
 	var suit = card.get_suit_str().to_lower()
+	$CardContent/SuitTop.set_texture(load("res://assets/" + suit + "_small.png"))
 	$CardContent/SuitBottom.set_texture(load("res://assets/" + suit + "_small.png"))
 
 
