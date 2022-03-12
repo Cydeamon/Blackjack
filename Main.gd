@@ -8,6 +8,16 @@ var game_is_running = false
 var player = Player.new()
 var enemy = Enemy.new()
 
+var chips_textures = {
+	500: preload("res://assets/chip_500.png"),
+	100: preload("res://assets/chip_100.png"),
+	25: preload("res://assets/chip_25.png"),
+	10: preload("res://assets/chip_10.png"),
+	5: preload("res://assets/chip_5.png"),
+	1: preload("res://assets/chip_1.png")
+}
+
+
 ###########################################################################################
 ##################################### GODOT FUNCTIONS #####################################
 
@@ -15,10 +25,11 @@ func _ready():
 	randomize()
 	
 	enemy.connect("give_me_card", self, "give_card_to_enemy")
-	enemy.set_timer($GiveEnemyCardTimer)
+	enemy.set_timer($Timers/GiveEnemyCardTimer)
 
 	init_deck()
 	init()
+	draw_player_chips()
 
 
 func _process(_delta):
@@ -28,7 +39,7 @@ func _process(_delta):
 		if enemy.is_ready && player.is_ready:
 			player.is_ready = false
 			enemy.show_cards()
-			$EnemyPointsLabel.show()
+			$UI/EnemyPointsLabel.show()
 			compare_results()
 
 
@@ -43,16 +54,16 @@ func init():
 	player.reset()
 	enemy.reset()
 
-	$PlayerPointsLabel.text = '0'
-	$EnemyPointsLabel.text = '0'
+	$UI/PlayerPointsLabel.text = '0'
+	$UI/EnemyPointsLabel.text = '0'
 
-	$MessageBackground.hide()
-	$VictoryMessage.hide()
+	$UI/MessageBackground.hide()
+	$UI/VictoryMessage.hide()
 
-	$TimeoutBeforeStart.start()
-	$ReadyButton.text = "READY"
+	$Timers/TimeoutBeforeStart.start()
+	$UI/ReadyButton.text = "READY"
 
-	$EnemyPointsLabel.hide()
+	$UI/EnemyPointsLabel.hide()
 
 
 # Init deck with all possible cards
@@ -74,7 +85,7 @@ func give_card_to_player():
 		player.add_card(card)
 		card.flip()
 		move_cards_to_center(get_viewport().get_visible_rect().size.y - card_height - 15, player.get_cards())
-		$PlayerPointsLabel.text = str(player.calc_points());
+		$UI/PlayerPointsLabel.text = str(player.calc_points());
 
 		if player.calc_points() > 21:
 			_on_ReadyButton_pressed()
@@ -90,7 +101,7 @@ func give_card_to_enemy():
 		$CardsLayer.add_child(card)
 		enemy.add_card(card)
 		move_cards_to_center(10, enemy.get_cards())
-		$EnemyPointsLabel.text = str(enemy.calc_points());
+		$UI/EnemyPointsLabel.text = str(enemy.calc_points());
 
 	
 # Get random card from deck
@@ -158,13 +169,86 @@ func compare_results():
 
 
 func show_message(message):
-	$MessageBackground.show()
-	$VictoryMessage.show()
+	$UI/MessageBackground.show()
+	$UI/VictoryMessage.show()
 
-	$VictoryMessage.set_texture(load("res://assets/" + message + "_msg.png"))
+	$UI/VictoryMessage.set_texture(load("res://assets/" + message + "_msg.png"))
 	$AnimationPlayer.current_animation = "show_victory_message"
 	$AnimationPlayer.play()
+	
+	
+	
+func draw_player_chips():
+	delete_children($PlayerChips)
+	draw_chips(get_player_chips(player), $PlayerChips)
+	
+	
+func draw_chips(chips_amount, parent_node):
+	var x_offset = 0
+	var y_offset = 0
+	var chips_in_row = 3
+	var cur_stack = 0
+	
+	for chip_value in chips_amount:
+		var amount = chips_amount[chip_value]
+		var texture = chips_textures[chip_value]
+		var group_node = Node2D.new()
 
+		if (cur_stack) % chips_in_row == 0:
+			y_offset += 1
+			x_offset = 0
+
+		for i in amount:
+			var chip = preload("res://Chip.tscn").instance()			
+			var chip_position = Vector2.ZERO
+			
+			chip_position.x -= (texture.get_width() + 2) * x_offset
+			chip_position.y -= ((texture.get_height() + 2) * y_offset) + i * 2
+			chip.position = chip_position
+		
+			chip.get_node("Sprite").set_texture(texture)
+			group_node.add_child(chip)
+		
+		x_offset += 1
+		cur_stack += 1
+		
+		parent_node.add_child(group_node)
+		parent_node.move_child(group_node, 0)
+
+	
+func get_player_chips(player):
+	var result = {
+		500: 0,
+		100: 0,
+		25:  0,
+		10:  0,
+		5:   0,
+		1:   0
+	}	
+	
+	var player_money = player.money
+	var prev_chip_value = null
+	
+	for chip_value in result:
+		var chips_amount = int(player_money / int(chip_value))
+		player_money -= chips_amount * chip_value
+		
+		if chips_amount == 0 && prev_chip_value && result[prev_chip_value] > 2:
+			var temp_money = int(prev_chip_value) * 2
+			result[prev_chip_value] -= 2
+			chips_amount = int(temp_money / int(chip_value))
+			temp_money -= chips_amount * int(chip_value)
+			player_money += temp_money
+		
+		result[chip_value] = chips_amount
+		prev_chip_value = chip_value
+	
+	return result 
+
+func delete_children(node):
+	for n in node.get_children():
+		node.remove_child(n)
+			
 			
 ###########################################################################################
 ######################################### SIGNALS #########################################
@@ -177,7 +261,7 @@ func _on_CardDeck_input_event(_viewport:Node, event:InputEvent, _shape_idx:int):
 
 func _on_ReadyButton_pressed():
 	player.set_ready(true)
-	$ReadyButton.text = "WAITING"
+	$UI/ReadyButton.text = "WAITING"
 
 
 func _on_AnimationPlayer_animation_finished(anim_name:String):

@@ -44,7 +44,6 @@ func set_front_face_visible(val :bool):
 		$CardContent/SuitBottom.show()
 		$CardContent/SuitTop.show()
 
-		print(card.get_rank_str())
 		if (card.get_rank_str() == "RANK_J" || card.get_rank_str() == "RANK_Q" || card.get_rank_str() == "RANK_K" || card.get_rank_str() == "RANK_A"):
 			$CardContent/CentralImage.show()
 

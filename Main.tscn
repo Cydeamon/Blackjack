@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://assets/bg.png" type="Texture" id=1]
 [ext_resource path="res://assets/card_back.png" type="Texture" id=2]
@@ -7,11 +7,12 @@
 [ext_resource path="res://fonts/TIMES.TTF" type="DynamicFontData" id=5]
 [ext_resource path="res://times.tres" type="DynamicFont" id=6]
 [ext_resource path="res://assets/won_msg.png" type="Texture" id=7]
+[ext_resource path="res://Theme.tres" type="Theme" id=8]
 
 [sub_resource type="Animation" id=8]
 length = 0.001
 tracks/0/type = "value"
-tracks/0/path = NodePath("VictoryMessage:position")
+tracks/0/path = NodePath("UI/VictoryMessage:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -23,7 +24,7 @@ tracks/0/keys = {
 "values": [ Vector2( -192, 180 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("MessageBackground:color")
+tracks/1/path = NodePath("UI/MessageBackground:color")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -39,7 +40,7 @@ tracks/1/keys = {
 resource_name = "show_victory_message"
 length = 3.0
 tracks/0/type = "value"
-tracks/0/path = NodePath("VictoryMessage:position")
+tracks/0/path = NodePath("UI/VictoryMessage:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
@@ -51,7 +52,7 @@ tracks/0/keys = {
 "values": [ Vector2( -192, 180 ), Vector2( -192, 180 ), Vector2( 320, 180 ), Vector2( 320, 180 ), Vector2( 824, 180 ), Vector2( 824, 180 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath("MessageBackground:color")
+tracks/1/path = NodePath("UI/MessageBackground:color")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
@@ -131,13 +132,14 @@ texture = ExtResource( 2 )
 position = Vector2( 54.5, 186 )
 shape = SubResource( 1 )
 
-[node name="GiveEnemyCardTimer" type="Timer" parent="."]
-one_shot = true
+[node name="CardsSpawnPosition" type="Position2D" parent="."]
+position = Vector2( 12, 122 )
 
-[node name="TimeoutBeforeStart" type="Timer" parent="."]
-one_shot = true
+[node name="CardsLayer" type="Node2D" parent="."]
 
-[node name="PlayerPointsLabel" type="Label" parent="."]
+[node name="UI" type="Node2D" parent="."]
+
+[node name="PlayerPointsLabel" type="Label" parent="UI"]
 margin_left = 12.0
 margin_top = 256.0
 margin_right = 52.0
@@ -148,7 +150,7 @@ custom_colors/font_color = Color( 1, 0, 0, 1 )
 text = "0"
 align = 1
 
-[node name="EnemyPointsLabel" type="Label" parent="."]
+[node name="EnemyPointsLabel" type="Label" parent="UI"]
 margin_left = 6.0
 margin_top = 27.0
 margin_right = 46.0
@@ -159,20 +161,16 @@ custom_colors/font_color = Color( 1, 0, 0, 1 )
 text = "0"
 align = 1
 
-[node name="CardsSpawnPosition" type="Position2D" parent="."]
-position = Vector2( 12, 122 )
-
-[node name="ReadyButton" type="Button" parent="."]
+[node name="ReadyButton" type="Button" parent="UI"]
 margin_left = 12.0
 margin_top = 336.0
 margin_right = 97.0
 margin_bottom = 357.0
+rect_pivot_offset = Vector2( 79, -38 )
 theme = SubResource( 5 )
 text = "Ready"
 
-[node name="CardsLayer" type="Node2D" parent="."]
-
-[node name="MessageBackground" type="ColorRect" parent="."]
+[node name="MessageBackground" type="ColorRect" parent="UI"]
 visible = false
 light_mask = 0
 margin_top = 118.0
@@ -180,12 +178,57 @@ margin_right = 640.0
 margin_bottom = 246.0
 color = Color( 0, 0, 0, 0 )
 
-[node name="VictoryMessage" type="Sprite" parent="."]
+[node name="VictoryMessage" type="Sprite" parent="UI"]
 visible = false
 position = Vector2( -192, 180 )
 texture = ExtResource( 7 )
 
+[node name="PlayerMoneyLabel" type="Label" parent="UI"]
+margin_left = 239.0
+margin_top = 322.0
+margin_right = 634.0
+margin_bottom = 361.0
+rect_pivot_offset = Vector2( -206, 23 )
+theme = ExtResource( 4 )
+custom_colors/font_outline_modulate = Color( 0.164706, 0.678431, 0, 1 )
+text = "5000$"
+align = 2
+
+[node name="BetMoneyLabel" type="Label" parent="UI"]
+margin_left = 492.0
+margin_top = 82.0
+margin_right = 636.0
+margin_bottom = 121.0
+rect_pivot_offset = Vector2( -206, 23 )
+theme = ExtResource( 4 )
+custom_colors/font_outline_modulate = Color( 0.164706, 0.678431, 0, 1 )
+text = "0$"
+align = 2
+
+[node name="NoteLabel" type="Label" parent="UI"]
+margin_left = 277.0
+margin_top = 1.0
+margin_right = 635.0
+margin_bottom = 40.0
+theme = ExtResource( 8 )
+text = "Give card to the player"
+align = 2
+
+[node name="BetChips" type="Node2D" parent="."]
+position = Vector2( 478, 132 )
+
+[node name="PlayerChips" type="Node2D" parent="."]
+position = Vector2( 631, 319 )
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="GiveEnemyCardTimer" type="Timer" parent="Timers"]
+one_shot = true
+
+[node name="TimeoutBeforeStart" type="Timer" parent="Timers"]
+one_shot = true
+
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
 [connection signal="input_event" from="CardDeck" to="." method="_on_CardDeck_input_event"]
-[connection signal="timeout" from="TimeoutBeforeStart" to="." method="_on_TimeoutBeforeStart_timeout"]
-[connection signal="pressed" from="ReadyButton" to="." method="_on_ReadyButton_pressed"]
+[connection signal="pressed" from="UI/ReadyButton" to="." method="_on_ReadyButton_pressed"]
+[connection signal="timeout" from="Timers/TimeoutBeforeStart" to="." method="_on_TimeoutBeforeStart_timeout"]

@@ -2,6 +2,7 @@ class_name Player
 
 var cards = []
 var is_ready = false
+var money = 5451
 
 func set_cards(new_cards):
 	cards = new_cards
@@ -36,6 +37,7 @@ func calc_points():
 			value += max_value
 
 	return value
+
 
 
 func set_ready(val: bool):
