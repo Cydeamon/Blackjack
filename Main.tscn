@@ -215,7 +215,7 @@ text = "Give card to the player"
 align = 2
 
 [node name="BetChips" type="Node2D" parent="."]
-position = Vector2( 478, 132 )
+position = Vector2( 534, 183 )
 
 [node name="PlayerChips" type="Node2D" parent="."]
 position = Vector2( 631, 319 )

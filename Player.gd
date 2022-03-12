@@ -2,7 +2,7 @@ class_name Player
 
 var cards = []
 var is_ready = false
-var money = 5451
+var money = 5000
 
 func set_cards(new_cards):
 	cards = new_cards

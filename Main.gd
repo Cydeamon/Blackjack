@@ -233,9 +233,9 @@ func get_player_chips(player):
 		var chips_amount = int(player_money / int(chip_value))
 		player_money -= chips_amount * chip_value
 		
-		if chips_amount == 0 && prev_chip_value && result[prev_chip_value] > 2:
-			var temp_money = int(prev_chip_value) * 2
-			result[prev_chip_value] -= 2
+		if chips_amount <= 2 && prev_chip_value && result[prev_chip_value] > 1:
+			var temp_money = int(prev_chip_value) * 1
+			result[prev_chip_value] -= 1
 			chips_amount = int(temp_money / int(chip_value))
 			temp_money -= chips_amount * int(chip_value)
 			player_money += temp_money
