@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://assets/bg.png" type="Texture" id=1]
 [ext_resource path="res://assets/card_back.png" type="Texture" id=2]
@@ -70,6 +70,18 @@ extents = Vector2( 42.5, 64 )
 [sub_resource type="DynamicFont" id=2]
 font_data = ExtResource( 5 )
 
+[sub_resource type="StyleBoxFlat" id=10]
+bg_color = Color( 0.266667, 0.266667, 0.266667, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.113725, 0.113725, 0.113725, 1 )
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [sub_resource type="StyleBoxFlat" id=7]
 bg_color = Color( 1, 0.0901961, 0.0901961, 1 )
 border_width_left = 2
@@ -103,6 +115,7 @@ Button/colors/font_color_hover = Color( 0.94, 0.94, 0.94, 1 )
 Button/colors/font_color_pressed = Color( 1, 1, 1, 1 )
 Button/constants/hseparation = 2
 Button/fonts/font = SubResource( 2 )
+Button/styles/disabled = SubResource( 10 )
 Button/styles/hover = SubResource( 7 )
 Button/styles/normal = SubResource( 6 )
 Button/styles/pressed = SubResource( 6 )
@@ -137,6 +150,17 @@ position = Vector2( 12, 122 )
 
 [node name="CardsLayer" type="Node2D" parent="."]
 
+[node name="BetChips" type="Node2D" parent="."]
+position = Vector2( 630, 147 )
+
+[node name="PlayerChips" type="Node2D" parent="."]
+position = Vector2( 631, 319 )
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="GiveEnemyCardTimer" type="Timer" parent="Timers"]
+one_shot = true
+
 [node name="UI" type="Node2D" parent="."]
 
 [node name="PlayerPointsLabel" type="Label" parent="UI"]
@@ -168,20 +192,7 @@ margin_right = 97.0
 margin_bottom = 357.0
 rect_pivot_offset = Vector2( 79, -38 )
 theme = SubResource( 5 )
-text = "Ready"
-
-[node name="MessageBackground" type="ColorRect" parent="UI"]
-visible = false
-light_mask = 0
-margin_top = 118.0
-margin_right = 640.0
-margin_bottom = 246.0
-color = Color( 0, 0, 0, 0 )
-
-[node name="VictoryMessage" type="Sprite" parent="UI"]
-visible = false
-position = Vector2( -192, 180 )
-texture = ExtResource( 7 )
+text = "Stand"
 
 [node name="PlayerMoneyLabel" type="Label" parent="UI"]
 margin_left = 239.0
@@ -196,9 +207,9 @@ align = 2
 
 [node name="BetMoneyLabel" type="Label" parent="UI"]
 margin_left = 492.0
-margin_top = 82.0
+margin_top = 147.0
 margin_right = 636.0
-margin_bottom = 121.0
+margin_bottom = 186.0
 rect_pivot_offset = Vector2( -206, 23 )
 theme = ExtResource( 4 )
 custom_colors/font_outline_modulate = Color( 0.164706, 0.678431, 0, 1 )
@@ -211,24 +222,25 @@ margin_top = 1.0
 margin_right = 635.0
 margin_bottom = 40.0
 theme = ExtResource( 8 )
-text = "Give card to the player"
 align = 2
 
-[node name="BetChips" type="Node2D" parent="."]
-position = Vector2( 534, 183 )
+[node name="MessageBackground" type="ColorRect" parent="UI"]
+visible = false
+light_mask = 0
+margin_top = 118.0
+margin_right = 640.0
+margin_bottom = 246.0
+color = Color( 0, 0, 0, 0 )
 
-[node name="PlayerChips" type="Node2D" parent="."]
-position = Vector2( 631, 319 )
-
-[node name="Timers" type="Node" parent="."]
-
-[node name="GiveEnemyCardTimer" type="Timer" parent="Timers"]
-one_shot = true
-
-[node name="TimeoutBeforeStart" type="Timer" parent="Timers"]
-one_shot = true
+[node name="VictoryMessage" type="Sprite" parent="UI"]
+visible = false
+position = Vector2( -192, 180 )
+texture = ExtResource( 7 )
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
 [connection signal="input_event" from="CardDeck" to="." method="_on_CardDeck_input_event"]
+[connection signal="mouse_entered" from="CardDeck" to="." method="_on_CardDeck_mouse_entered"]
+[connection signal="mouse_exited" from="CardDeck" to="." method="clear_note_text"]
+[connection signal="mouse_entered" from="UI/ReadyButton" to="." method="_on_ReadyButton_mouse_entered"]
+[connection signal="mouse_exited" from="UI/ReadyButton" to="." method="clear_note_text"]
 [connection signal="pressed" from="UI/ReadyButton" to="." method="_on_ReadyButton_pressed"]
-[connection signal="timeout" from="Timers/TimeoutBeforeStart" to="." method="_on_TimeoutBeforeStart_timeout"]

@@ -4,11 +4,11 @@ class_name Enemy
 signal give_me_card
 
 var points_limit
-var min_limit = 10
+var min_limit = 15
 var max_limit = 21
 var waiting = false
 var decide_timer
-var max_think_time = 5
+var max_think_time = 4
 var min_think_time = 2
 	
 func _init():

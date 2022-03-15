@@ -14,6 +14,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Enemy.gd"
 }, {
+"base": "",
+"class": "GitAPI",
+"language": "NativeScript",
+"path": "res://addons/godot-git-plugin/git_api.gdns"
+}, {
 "base": "Reference",
 "class": "Player",
 "language": "GDScript",
@@ -26,6 +31,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "Enemy": "",
+"GitAPI": "",
 "Player": "",
 "PlayingCard": ""
 }
@@ -44,6 +50,10 @@ window/size/test_width=1280
 window/size/test_height=720
 window/stretch/mode="viewport"
 window/stretch/aspect="keep"
+
+[gdnative]
+
+singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
 
 [physics]
 

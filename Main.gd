@@ -4,9 +4,13 @@ var deck = []				# Deck (all 50 cards)
 var deck_cards_taken = []	# Cards that was taken from deck (indexes)
 var card_height = 128
 var game_is_running = false
+var bet = 0
+var min_bet = 50
 
 var player = Player.new()
 var enemy = Enemy.new()
+
+var bet_chips;
 
 var chips_textures = {
 	500: preload("res://assets/chip_500.png"),
@@ -24,15 +28,23 @@ var chips_textures = {
 func _ready():
 	randomize()
 	
-	enemy.connect("give_me_card", self, "give_card_to_enemy")
+	enemy.connect("give_me_card", self, "give_card_to_enemy", [false])
 	enemy.set_timer($Timers/GiveEnemyCardTimer)
 
 	init_deck()
 	init()
-	draw_player_chips()
+
 
 
 func _process(_delta):
+	if !game_is_running && bet >= min_bet:		
+		game_is_running = true
+		give_card_to_player()
+		give_card_to_player()
+		give_card_to_enemy(true)
+		give_card_to_enemy()
+
+
 	if game_is_running:
 		enemy.check_ready()
 
@@ -54,14 +66,30 @@ func init():
 	player.reset()
 	enemy.reset()
 
+	$UI/BetMoneyLabel.text = "0$"
+	bet = 0
+	bet_chips = {
+		500: 0,
+		100: 0,
+		25: 0,
+		10: 0,
+		5: 0,
+		1: 0
+	}
+
+	draw_bet_chips()
+	draw_player_chips()
+
+	$UI/PlayerMoneyLabel.text = str(player.money) + "$"
+
 	$UI/PlayerPointsLabel.text = '0'
 	$UI/EnemyPointsLabel.text = '0'
 
 	$UI/MessageBackground.hide()
 	$UI/VictoryMessage.hide()
 
-	$Timers/TimeoutBeforeStart.start()
-	$UI/ReadyButton.text = "READY"
+	$UI/ReadyButton.text = "Minimal bet is " + str(min_bet) + "$"
+	$UI/ReadyButton.set_disabled(true)
 
 	$UI/EnemyPointsLabel.hide()
 
@@ -92,11 +120,11 @@ func give_card_to_player():
 
 
 # Give card to enemy and move it to center of screen
-func give_card_to_enemy():
+func give_card_to_enemy(front_face_visible = false):
 	if game_is_running:
 		var card = preload('Card.tscn').instance()
 		card.position = $CardsSpawnPosition.position
-		card.set_front_face_visible(false)
+		card.set_front_face_visible(front_face_visible)
 		card.set_card(take_random_card_from_deck())
 		$CardsLayer.add_child(card)
 		enemy.add_card(card)
@@ -156,10 +184,24 @@ func compare_results():
 		message = "victory"
 	elif player_score > enemy_score:
 		message = "victory"
+	elif player_score == enemy_score:
+		message = "draw"
 	else:
 		message = "lost"
 
+	if message == "victory" && player_score == 21 && player.cards.size() == 2:
+		message = "blackjack"
+
 	show_message(message)
+
+	if message == "victory":
+		player.money += bet*2
+		
+	if message == "blackjack":
+		player.money += bet + bet * 1.5;
+
+	if message == "draw":
+		player.money += bet
 
 	if message == "lost":
 		enemy.increase_limit()
@@ -180,10 +222,10 @@ func show_message(message):
 	
 func draw_player_chips():
 	delete_children($PlayerChips)
-	draw_chips(get_player_chips(player), $PlayerChips)
+	draw_chips(get_player_chips(), $PlayerChips)
 	
 	
-func draw_chips(chips_amount, parent_node):
+func draw_chips(chips_amount, parent_node, connect_signals = true):
 	var x_offset = 0
 	var y_offset = 0
 	var chips_in_row = 3
@@ -199,8 +241,17 @@ func draw_chips(chips_amount, parent_node):
 			x_offset = 0
 
 		for i in amount:
-			var chip = preload("res://Chip.tscn").instance()			
+			var chip = preload("res://Chip.tscn").instance()
 			var chip_position = Vector2.ZERO
+
+			chip.chip_value = chip_value
+
+			if connect_signals: 
+				chip.connect("mouse_exited", self, "clear_note_text")
+				chip.connect("mouse_entered", self, "show_bet_note", [chip])
+
+				if i == amount - 1:
+					chip.connect("mouse_clicked", self, "add_to_bet")
 			
 			chip_position.x -= (texture.get_width() + 2) * x_offset
 			chip_position.y -= ((texture.get_height() + 2) * y_offset) + i * 2
@@ -215,8 +266,14 @@ func draw_chips(chips_amount, parent_node):
 		parent_node.add_child(group_node)
 		parent_node.move_child(group_node, 0)
 
+
+
+func show_bet_note(chip):
+	$UI/NoteLabel.text = "Add " + str(chip.chip_value) + "$ to the bet and exchange chips"
+
+
 	
-func get_player_chips(player):
+func get_player_chips():
 	var result = {
 		500: 0,
 		100: 0,
@@ -245,11 +302,43 @@ func get_player_chips(player):
 	
 	return result 
 
+
+
 func delete_children(node):
 	for n in node.get_children():
 		node.remove_child(n)
 			
 			
+			
+func clear_note_text():
+	$UI/NoteLabel.text = ""
+
+
+
+func add_to_bet(params):
+	var chip = params[0]
+	bet += int(chip.chip_value)
+	player.money -= int(chip.chip_value)
+	bet_chips[chip.chip_value] += 1
+	draw_player_chips()
+	draw_bet_chips()
+	$UI/BetMoneyLabel.text = str(bet) + "$"
+	$UI/PlayerMoneyLabel.text = str(player.money) + "$"
+	check_bet()
+
+
+
+func check_bet():
+	if bet >= min_bet:
+		$UI/ReadyButton.set_disabled(false)
+		$UI/ReadyButton.text = "STAND"
+
+
+
+func draw_bet_chips():
+	delete_children($BetChips)
+	draw_chips(bet_chips, $BetChips, false)
+
 ###########################################################################################
 ######################################### SIGNALS #########################################
 
@@ -278,11 +367,9 @@ func _on_AnimationPlayer_animation_finished(anim_name:String):
 		yield(t, "timeout")
 		init()
 
+func _on_CardDeck_mouse_entered():
+	$UI/NoteLabel.text = "Take a card from the deck"
 
-func _on_TimeoutBeforeStart_timeout():
-	game_is_running = true
 
-	give_card_to_player()
-	give_card_to_player()
-	give_card_to_enemy()
-	give_card_to_enemy()
+func _on_ReadyButton_mouse_entered():
+	$UI/NoteLabel.text = "You are satisfied with your score"

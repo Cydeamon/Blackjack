@@ -29,6 +29,7 @@ func update_view():
 	else:
 		$CardContent/CardSprite.set_texture(load("res://assets/card_back.png"))
 		
+
 func set_front_face_visible(val :bool):
 	is_front_face_visible = val
 
@@ -44,8 +45,12 @@ func set_front_face_visible(val :bool):
 		$CardContent/SuitBottom.show()
 		$CardContent/SuitTop.show()
 
-		if (card.get_rank_str() == "RANK_J" || card.get_rank_str() == "RANK_Q" || card.get_rank_str() == "RANK_K" || card.get_rank_str() == "RANK_A"):
+		if card && (card.get_rank_str() == "RANK_J" || card.get_rank_str() == "RANK_Q" || card.get_rank_str() == "RANK_K" || card.get_rank_str() == "RANK_A"):
 			$CardContent/CentralImage.show()
+
+	if card:
+		update_view()
+
 
 func update_rank():
 	var rank = card.get_rank_str().replace("RANK_", "")
@@ -84,7 +89,10 @@ func show_pattern(rank, suit):
 	for sprite in sprites:
 		sprite.set_texture(resource)
 
-	pattern_node.show()
+	if is_front_face_visible:
+		pattern_node.show()
+	else:
+		pattern_node.hide()
 
 
 func reset_sprites():
@@ -109,7 +117,6 @@ func flip():
 	$FlipAnimation.play()
 	$CardContent/CardSprite.set_texture(load("res://assets/card_front.png"))
 	set_front_face_visible(true)
-	update_view()
 
 func _on_FlipAnimation_animation_finished():
 	$FlipAnimation.hide()
