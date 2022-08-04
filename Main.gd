@@ -441,19 +441,18 @@ func _on_menu_option_mouse_entered(menu_index):
 func _unhandled_input(event):
 	if menu_mode && event.is_action_pressed("ui_down"):
 		select_next_menu_option()
-
-	if menu_mode && event.is_action_pressed("ui_up"):
+	
+	elif menu_mode && event.is_action_pressed("ui_up"):
 		select_prev_menu_option()
-
-
-	if menu_mode && event.is_action_pressed("ui_cancel") && game_was_started:
+	
+	elif menu_mode && event.is_action_pressed("ui_cancel") && game_was_started:
 		close_menu()
-
-	if !menu_mode && event.is_action_pressed("ui_cancel"):
+	
+	elif !menu_mode && event.is_action_pressed("ui_cancel"):
 		init_menu()
 		$UI/Menu/MenuOptions/start_resume_game.texture = resume_menu_texture
-
-	if menu_mode && event.is_action_pressed("ui_accept"):
+	
+	elif menu_mode && event.is_action_pressed("ui_accept"):
 		match (menu_options[current_menu_option_index].name):
 			"start_resume_game": 
 				close_menu()
