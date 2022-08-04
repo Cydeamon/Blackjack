@@ -6,19 +6,26 @@ var card_height = 128
 var game_is_running = false
 var bet = 0
 var min_bet = 50
+var game_was_started = false
+
+var menu_mode = true
+var menu_options = []
+var current_menu_option_index = 0
+var resume_menu_texture = preload("res://assets/Menu options/resume.png")
+
 
 var player = Player.new()
 var enemy = Enemy.new()
 
-var bet_chips;
+var bet_chips
 
 var chips_textures = {
-	500: preload("res://assets/chip_500.png"),
-	100: preload("res://assets/chip_100.png"),
-	25: preload("res://assets/chip_25.png"),
-	10: preload("res://assets/chip_10.png"),
-	5: preload("res://assets/chip_5.png"),
-	1: preload("res://assets/chip_1.png")
+	500: preload("res://assets/Chips/chip_500.png"),
+	100: preload("res://assets/Chips/chip_100.png"),
+	25: preload("res://assets/Chips/chip_25.png"),
+	10: preload("res://assets/Chips/chip_10.png"),
+	5: preload("res://assets/Chips/chip_5.png"),
+	1: preload("res://assets/Chips/chip_1.png")
 }
 
 
@@ -26,13 +33,14 @@ var chips_textures = {
 ##################################### GODOT FUNCTIONS #####################################
 
 func _ready():
+	menu_options = $UI/Menu/MenuOptions/.get_children()
+
 	randomize()
 	
 	enemy.connect("give_me_card", self, "give_card_to_enemy", [false])
 	enemy.set_timer($Timers/GiveEnemyCardTimer)
 
-	init_deck()
-	init()
+	init_menu()
 
 
 
@@ -51,7 +59,7 @@ func _process(_delta):
 		if enemy.is_ready && player.is_ready:
 			player.is_ready = false
 			enemy.show_cards()
-			$UI/EnemyPointsLabel.show()
+			$UI/GameUI/EnemyPointsLabel.show()
 			compare_results()
 
 
@@ -66,7 +74,7 @@ func init():
 	player.reset()
 	enemy.reset()
 
-	$UI/BetMoneyLabel.text = "0$"
+	$UI/GameUI/BetMoneyLabel.text = "0$"
 	bet = 0
 	bet_chips = {
 		500: 0,
@@ -80,18 +88,67 @@ func init():
 	draw_bet_chips()
 	draw_player_chips()
 
-	$UI/PlayerMoneyLabel.text = str(player.money) + "$"
+	$UI/GameUI/PlayerMoneyLabel.text = str(player.money) + "$"
 
-	$UI/PlayerPointsLabel.text = '0'
-	$UI/EnemyPointsLabel.text = '0'
+	$UI/GameUI/PlayerPointsLabel.text = '0'
+	$UI/GameUI/EnemyPointsLabel.text = '0'
 
-	$UI/MessageBackground.hide()
-	$UI/VictoryMessage.hide()
+	$UI/GameUI/MessageBackground.hide()
+	$UI/GameUI/VictoryMessage.hide()
 
-	$UI/ReadyButton.text = "Minimal bet is " + str(min_bet) + "$"
-	$UI/ReadyButton.set_disabled(true)
+	$UI/GameUI/NoteLabel.text = "Minimal bet is " + str(min_bet) + "$"
+	$UI/GameUI/ReadyButton.set_disabled(true)
 
-	$UI/EnemyPointsLabel.hide()
+	$UI/GameUI/EnemyPointsLabel.hide()
+
+
+func start_game():
+	init_deck()
+	init()
+
+
+func update_menu():
+	var indicator = $UI/Menu/current_option_indicator
+	var current_menu_option = menu_options[current_menu_option_index]
+	
+	for i in menu_options.size():
+		if (i == current_menu_option_index):
+			current_menu_option.position.x = 12
+		else:
+			menu_options[i].position.x = 0
+
+	indicator.transform = current_menu_option.get_global_transform_with_canvas() 
+	indicator.position.x -= 12
+	indicator.position.y += current_menu_option.offset.y
+
+
+func select_next_menu_option():
+	current_menu_option_index += 1
+
+	if current_menu_option_index >= menu_options.size():
+		current_menu_option_index = 0
+
+	update_menu()
+
+
+func select_prev_menu_option():
+	current_menu_option_index -= 1
+
+	if current_menu_option_index < 0:
+		current_menu_option_index = menu_options.size() - 1
+
+	update_menu()
+
+
+func init_menu():
+	$UI/Menu/.visible = true
+	menu_mode = true
+	current_menu_option_index = 0
+	update_menu()
+
+func close_menu():
+	menu_mode = false
+	$UI/Menu/.visible = false
 
 
 # Init deck with all possible cards
@@ -113,7 +170,7 @@ func give_card_to_player():
 		player.add_card(card)
 		card.flip()
 		move_cards_to_center(get_viewport().get_visible_rect().size.y - card_height - 15, player.get_cards())
-		$UI/PlayerPointsLabel.text = str(player.calc_points());
+		$UI/GameUI/PlayerPointsLabel.text = str(player.calc_points());
 
 		if player.calc_points() > 21:
 			_on_ReadyButton_pressed()
@@ -129,7 +186,7 @@ func give_card_to_enemy(front_face_visible = false):
 		$CardsLayer.add_child(card)
 		enemy.add_card(card)
 		move_cards_to_center(10, enemy.get_cards())
-		$UI/EnemyPointsLabel.text = str(enemy.calc_points());
+		$UI/GameUI/EnemyPointsLabel.text = str(enemy.calc_points());
 
 	
 # Get random card from deck
@@ -211,10 +268,10 @@ func compare_results():
 
 
 func show_message(message):
-	$UI/MessageBackground.show()
-	$UI/VictoryMessage.show()
+	$UI/GameUI/MessageBackground.show()
+	$UI/GameUI/VictoryMessage.show()
 
-	$UI/VictoryMessage.set_texture(load("res://assets/" + message + "_msg.png"))
+	$UI/GameUI/VictoryMessage.set_texture(load("res://assets/" + message + "_msg.png"))
 	$AnimationPlayer.current_animation = "show_victory_message"
 	$AnimationPlayer.play()
 	
@@ -269,7 +326,7 @@ func draw_chips(chips_amount, parent_node, connect_signals = true):
 
 
 func show_bet_note(chip):
-	$UI/NoteLabel.text = "Add " + str(chip.chip_value) + "$ to the bet and exchange chips"
+	$UI/GameUI/NoteLabel.text = "Add " + str(chip.chip_value) + "$ to the bet and exchange chips"
 
 
 	
@@ -311,7 +368,7 @@ func delete_children(node):
 			
 			
 func clear_note_text():
-	$UI/NoteLabel.text = ""
+	$UI/GameUI/NoteLabel.text = ""
 
 
 
@@ -322,16 +379,16 @@ func add_to_bet(params):
 	bet_chips[chip.chip_value] += 1
 	draw_player_chips()
 	draw_bet_chips()
-	$UI/BetMoneyLabel.text = str(bet) + "$"
-	$UI/PlayerMoneyLabel.text = str(player.money) + "$"
+	$UI/GameUI/BetMoneyLabel.text = str(bet) + "$"
+	$UI/GameUI/PlayerMoneyLabel.text = str(player.money) + "$"
 	check_bet()
 
 
 
 func check_bet():
 	if bet >= min_bet:
-		$UI/ReadyButton.set_disabled(false)
-		$UI/ReadyButton.text = "STAND"
+		$UI/GameUI/ReadyButton.set_disabled(false)
+		$UI/GameUI/ReadyButton.text = "STAND"
 
 
 
@@ -350,7 +407,7 @@ func _on_CardDeck_input_event(_viewport:Node, event:InputEvent, _shape_idx:int):
 
 func _on_ReadyButton_pressed():
 	player.set_ready(true)
-	$UI/ReadyButton.text = "WAITING"
+	$UI/GameUI/ReadyButton.text = "WAITING"
 
 
 func _on_AnimationPlayer_animation_finished(anim_name:String):
@@ -368,8 +425,39 @@ func _on_AnimationPlayer_animation_finished(anim_name:String):
 		init()
 
 func _on_CardDeck_mouse_entered():
-	$UI/NoteLabel.text = "Take a card from the deck"
+	$UI/GameUI/NoteLabel.text = "Take a card from the deck"
 
 
 func _on_ReadyButton_mouse_entered():
-	$UI/NoteLabel.text = "You are satisfied with your score"
+	$UI/GameUI/NoteLabel.text = "No more cards"
+
+
+func _on_menu_option_mouse_entered(menu_index):
+	print("MOUSE")
+	current_menu_option_index = menu_index
+	update_menu()
+
+
+func _unhandled_input(event):
+	if menu_mode && event.is_action_pressed("ui_down"):
+		select_next_menu_option()
+
+	if menu_mode && event.is_action_pressed("ui_up"):
+		select_prev_menu_option()
+
+
+	if menu_mode && event.is_action_pressed("ui_cancel") && game_was_started:
+		close_menu()
+
+	if !menu_mode && event.is_action_pressed("ui_cancel"):
+		init_menu()
+		$UI/Menu/MenuOptions/start_resume_game.texture = resume_menu_texture
+
+	if menu_mode && event.is_action_pressed("ui_accept"):
+		match (menu_options[current_menu_option_index].name):
+			"start_resume_game": 
+				close_menu()
+				start_game()
+				game_was_started = true
+			"exit_game": 
+				get_tree().quit()

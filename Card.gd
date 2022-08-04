@@ -27,7 +27,7 @@ func update_view():
 		update_suit()
 		update_rank()
 	else:
-		$CardContent/CardSprite.set_texture(load("res://assets/card_back.png"))
+		$CardContent/CardSprite.set_texture(load("res://assets/Cards/card_back.png"))
 		
 
 func set_front_face_visible(val :bool):
@@ -64,16 +64,16 @@ func update_rank():
 		show_pattern(rank, suit)
 
 	if rank == "A":
-		show_central_image("res://assets/" + suit + "_a.png")
+		show_central_image("res://assets/Cards/" + suit + "_a.png")
 
 	if rank == "J" || rank == "Q" || rank == "K":
-		show_central_image("res://assets/" + rank.to_lower() + ".png")
+		show_central_image("res://assets/Cards/" + rank.to_lower() + ".png")
 
 
 func update_suit():
 	var suit = card.get_suit_str().to_lower()
-	$CardContent/SuitTop.set_texture(load("res://assets/" + suit + "_small.png"))
-	$CardContent/SuitBottom.set_texture(load("res://assets/" + suit + "_small.png"))
+	$CardContent/SuitTop.set_texture(load("res://assets/Cards/" + suit + "_small.png"))
+	$CardContent/SuitBottom.set_texture(load("res://assets/Cards/" + suit + "_small.png"))
 
 
 func show_central_image(texture):
@@ -84,7 +84,7 @@ func show_central_image(texture):
 func show_pattern(rank, suit):
 	var pattern_node = get_node("CardContent/Pattern" + rank)
 	var sprites = pattern_node.get_children()
-	var resource = load("res://assets/" + suit + "_medium.png")
+	var resource = load("res://assets/Cards/" + suit + "_medium.png")
 
 	for sprite in sprites:
 		sprite.set_texture(resource)
@@ -115,7 +115,7 @@ func flip():
 	$CardContent.hide()
 	$FlipAnimation.show()
 	$FlipAnimation.play()
-	$CardContent/CardSprite.set_texture(load("res://assets/card_front.png"))
+	$CardContent/CardSprite.set_texture(load("res://assets/Cards/card_front.png"))
 	set_front_face_visible(true)
 
 func _on_FlipAnimation_animation_finished():

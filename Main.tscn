@@ -1,71 +1,21 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://assets/bg.png" type="Texture" id=1]
-[ext_resource path="res://assets/card_back.png" type="Texture" id=2]
+[ext_resource path="res://assets/Cards/card_back.png" type="Texture" id=2]
 [ext_resource path="res://Main.gd" type="Script" id=3]
 [ext_resource path="res://Score.tres" type="Theme" id=4]
 [ext_resource path="res://fonts/TIMES.TTF" type="DynamicFontData" id=5]
 [ext_resource path="res://times.tres" type="DynamicFont" id=6]
-[ext_resource path="res://assets/won_msg.png" type="Texture" id=7]
+[ext_resource path="res://assets/victory_msg.png" type="Texture" id=7]
 [ext_resource path="res://Theme.tres" type="Theme" id=8]
+[ext_resource path="res://assets/Menu options/menu_bg.png" type="Texture" id=9]
+[ext_resource path="res://assets/Menu options/start.png" type="Texture" id=10]
+[ext_resource path="res://assets/Menu options/exit.png" type="Texture" id=11]
+[ext_resource path="res://assets/Menu options/menu_option_icon.png" type="Texture" id=12]
+[ext_resource path="res://assets/Menu options/chips.png" type="Texture" id=13]
 
-[sub_resource type="Animation" id=8]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/path = NodePath("UI/VictoryMessage:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Vector2( -192, 180 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("UI/MessageBackground:color")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 0,
-"values": [ Color( 0, 0, 0, 0 ) ]
-}
-
-[sub_resource type="Animation" id=9]
-resource_name = "show_victory_message"
-length = 3.0
-tracks/0/type = "value"
-tracks/0/path = NodePath("UI/VictoryMessage:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.4, 1.3, 1.8, 2.6, 3 ),
-"transitions": PoolRealArray( 0.143587, 0.189465, 1, 4.28709, 1, 1 ),
-"update": 0,
-"values": [ Vector2( -192, 180 ), Vector2( -192, 180 ), Vector2( 320, 180 ), Vector2( 320, 180 ), Vector2( 824, 180 ), Vector2( 824, 180 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("UI/MessageBackground:color")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 0.4, 2.5, 2.9 ),
-"transitions": PoolRealArray( 1, 1, 1, 1 ),
-"update": 0,
-"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0.6 ), Color( 0, 0, 0, 0.6 ), Color( 0, 0, 0, 0 ) ]
-}
-
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 42.5, 64 )
+[sub_resource type="RectangleShape2D" id=11]
+extents = Vector2( 56.5, 6 )
 
 [sub_resource type="DynamicFont" id=2]
 font_data = ExtResource( 5 )
@@ -120,8 +70,201 @@ Button/styles/hover = SubResource( 7 )
 Button/styles/normal = SubResource( 6 )
 Button/styles/pressed = SubResource( 6 )
 
+[sub_resource type="Animation" id=8]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("UI/GameUI/VictoryMessage:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( -192, 180 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("UI/GameUI/MessageBackground:color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "show_victory_message"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("UI/GameUI/VictoryMessage:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4, 1.3, 1.8, 2.6, 3 ),
+"transitions": PoolRealArray( 0.143587, 0.189465, 1, 4.28709, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -192, 180 ), Vector2( -192, 180 ), Vector2( 320, 180 ), Vector2( 320, 180 ), Vector2( 824, 180 ), Vector2( 824, 180 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("UI/GameUI/MessageBackground:color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.4, 2.5, 2.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 0.6 ), Color( 0, 0, 0, 0.6 ), Color( 0, 0, 0, 0 ) ]
+}
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 42.5, 64 )
+
 [node name="Main" type="Node2D"]
 script = ExtResource( 3 )
+
+[node name="UI" type="Node2D" parent="."]
+z_index = 2
+
+[node name="Menu" type="Node2D" parent="UI"]
+z_index = 1
+
+[node name="chips_menu" type="Sprite" parent="UI/Menu"]
+position = Vector2( 89, 316 )
+z_index = 2
+texture = ExtResource( 13 )
+
+[node name="menu_bg" type="Sprite" parent="UI/Menu"]
+position = Vector2( 320, 180 )
+z_index = 1
+texture = ExtResource( 9 )
+
+[node name="ColorRect" type="ColorRect" parent="UI/Menu"]
+margin_right = 640.0
+margin_bottom = 361.0
+color = Color( 0, 0, 0, 0.74902 )
+
+[node name="current_option_indicator" type="Sprite" parent="UI/Menu"]
+z_index = 2
+texture = ExtResource( 12 )
+centered = false
+
+[node name="MenuOptions" type="Node2D" parent="UI/Menu"]
+position = Vector2( 29, 136 )
+z_index = 1
+
+[node name="start_resume_game" type="Sprite" parent="UI/Menu/MenuOptions"]
+texture = ExtResource( 10 )
+centered = false
+
+[node name="Area2D" type="Area2D" parent="UI/Menu/MenuOptions/start_resume_game"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Menu/MenuOptions/start_resume_game/Area2D"]
+position = Vector2( 56.5, 6 )
+shape = SubResource( 11 )
+
+[node name="exit_game" type="Sprite" parent="UI/Menu/MenuOptions"]
+texture = ExtResource( 11 )
+centered = false
+offset = Vector2( 0, 20 )
+
+[node name="Area2D" type="Area2D" parent="UI/Menu/MenuOptions/exit_game"]
+position = Vector2( 0, 20 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Menu/MenuOptions/exit_game/Area2D"]
+position = Vector2( 56.5, 6 )
+shape = SubResource( 11 )
+
+[node name="GameUI" type="Node" parent="UI"]
+
+[node name="NoteBackground" type="ColorRect" parent="UI/GameUI"]
+margin_right = 640.0
+margin_bottom = 20.0
+color = Color( 0, 0, 0, 0.47451 )
+
+[node name="MessageBackground" type="ColorRect" parent="UI/GameUI"]
+visible = false
+light_mask = 0
+margin_top = 118.0
+margin_right = 640.0
+margin_bottom = 246.0
+color = Color( 0, 0, 0, 0 )
+
+[node name="PlayerPointsLabel" type="Label" parent="UI/GameUI"]
+margin_left = 12.0
+margin_top = 256.0
+margin_right = 52.0
+margin_bottom = 295.0
+rect_scale = Vector2( 2.12261, 1.90199 )
+theme = ExtResource( 4 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+text = "0"
+align = 1
+
+[node name="EnemyPointsLabel" type="Label" parent="UI/GameUI"]
+margin_left = 6.0
+margin_top = 27.0
+margin_right = 46.0
+margin_bottom = 66.0
+rect_scale = Vector2( 2.12261, 1.90199 )
+theme = ExtResource( 4 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+text = "0"
+align = 1
+
+[node name="ReadyButton" type="Button" parent="UI/GameUI"]
+margin_left = 12.0
+margin_top = 336.0
+margin_right = 97.0
+margin_bottom = 357.0
+rect_pivot_offset = Vector2( 79, -38 )
+theme = SubResource( 5 )
+text = "Stand"
+
+[node name="PlayerMoneyLabel" type="Label" parent="UI/GameUI"]
+margin_left = 239.0
+margin_top = 322.0
+margin_right = 634.0
+margin_bottom = 361.0
+rect_pivot_offset = Vector2( -206, 23 )
+theme = ExtResource( 4 )
+custom_colors/font_outline_modulate = Color( 0.164706, 0.678431, 0, 1 )
+text = "5000$"
+align = 2
+
+[node name="BetMoneyLabel" type="Label" parent="UI/GameUI"]
+margin_left = 492.0
+margin_top = 146.0
+margin_right = 636.0
+margin_bottom = 185.0
+rect_pivot_offset = Vector2( -206, 23 )
+theme = ExtResource( 4 )
+custom_colors/font_outline_modulate = Color( 0.164706, 0.678431, 0, 1 )
+text = "0$"
+align = 2
+
+[node name="NoteLabel" type="Label" parent="UI/GameUI"]
+margin_left = 277.0
+margin_top = 1.0
+margin_right = 635.0
+margin_bottom = 40.0
+theme = ExtResource( 8 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_colors/font_outline_modulate = Color( 1, 1, 1, 1 )
+align = 2
+
+[node name="VictoryMessage" type="Sprite" parent="UI/GameUI"]
+visible = false
+position = Vector2( -192, 180 )
+texture = ExtResource( 7 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/RESET = SubResource( 8 )
@@ -161,86 +304,12 @@ position = Vector2( 631, 319 )
 [node name="GiveEnemyCardTimer" type="Timer" parent="Timers"]
 one_shot = true
 
-[node name="UI" type="Node2D" parent="."]
-
-[node name="PlayerPointsLabel" type="Label" parent="UI"]
-margin_left = 12.0
-margin_top = 256.0
-margin_right = 52.0
-margin_bottom = 295.0
-rect_scale = Vector2( 2.12261, 1.90199 )
-theme = ExtResource( 4 )
-custom_colors/font_color = Color( 1, 0, 0, 1 )
-text = "0"
-align = 1
-
-[node name="EnemyPointsLabel" type="Label" parent="UI"]
-margin_left = 6.0
-margin_top = 27.0
-margin_right = 46.0
-margin_bottom = 66.0
-rect_scale = Vector2( 2.12261, 1.90199 )
-theme = ExtResource( 4 )
-custom_colors/font_color = Color( 1, 0, 0, 1 )
-text = "0"
-align = 1
-
-[node name="ReadyButton" type="Button" parent="UI"]
-margin_left = 12.0
-margin_top = 336.0
-margin_right = 97.0
-margin_bottom = 357.0
-rect_pivot_offset = Vector2( 79, -38 )
-theme = SubResource( 5 )
-text = "Stand"
-
-[node name="PlayerMoneyLabel" type="Label" parent="UI"]
-margin_left = 239.0
-margin_top = 322.0
-margin_right = 634.0
-margin_bottom = 361.0
-rect_pivot_offset = Vector2( -206, 23 )
-theme = ExtResource( 4 )
-custom_colors/font_outline_modulate = Color( 0.164706, 0.678431, 0, 1 )
-text = "5000$"
-align = 2
-
-[node name="BetMoneyLabel" type="Label" parent="UI"]
-margin_left = 492.0
-margin_top = 147.0
-margin_right = 636.0
-margin_bottom = 186.0
-rect_pivot_offset = Vector2( -206, 23 )
-theme = ExtResource( 4 )
-custom_colors/font_outline_modulate = Color( 0.164706, 0.678431, 0, 1 )
-text = "0$"
-align = 2
-
-[node name="NoteLabel" type="Label" parent="UI"]
-margin_left = 277.0
-margin_top = 1.0
-margin_right = 635.0
-margin_bottom = 40.0
-theme = ExtResource( 8 )
-align = 2
-
-[node name="MessageBackground" type="ColorRect" parent="UI"]
-visible = false
-light_mask = 0
-margin_top = 118.0
-margin_right = 640.0
-margin_bottom = 246.0
-color = Color( 0, 0, 0, 0 )
-
-[node name="VictoryMessage" type="Sprite" parent="UI"]
-visible = false
-position = Vector2( -192, 180 )
-texture = ExtResource( 7 )
-
+[connection signal="mouse_entered" from="UI/Menu/MenuOptions/start_resume_game/Area2D" to="." method="_on_menu_option_mouse_entered" binds= [ "0" ]]
+[connection signal="mouse_entered" from="UI/Menu/MenuOptions/exit_game/Area2D" to="." method="_on_menu_option_mouse_entered" binds= [ 1 ]]
+[connection signal="mouse_entered" from="UI/GameUI/ReadyButton" to="." method="_on_ReadyButton_mouse_entered"]
+[connection signal="mouse_exited" from="UI/GameUI/ReadyButton" to="." method="clear_note_text"]
+[connection signal="pressed" from="UI/GameUI/ReadyButton" to="." method="_on_ReadyButton_pressed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
 [connection signal="input_event" from="CardDeck" to="." method="_on_CardDeck_input_event"]
 [connection signal="mouse_entered" from="CardDeck" to="." method="_on_CardDeck_mouse_entered"]
 [connection signal="mouse_exited" from="CardDeck" to="." method="clear_note_text"]
-[connection signal="mouse_entered" from="UI/ReadyButton" to="." method="_on_ReadyButton_mouse_entered"]
-[connection signal="mouse_exited" from="UI/ReadyButton" to="." method="clear_note_text"]
-[connection signal="pressed" from="UI/ReadyButton" to="." method="_on_ReadyButton_pressed"]
