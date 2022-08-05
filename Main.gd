@@ -367,9 +367,7 @@ func draw_chips(chips_amount, parent_node, mode):
 			
 			if mode == "bet": 
 				chip.connect("mouse_entered", self, "show_reduce_bet_note", [chip])
-
-				if i == amount - 1:
-					chip.connect("mouse_clicked", self, "remove_from_bet")
+				chip.connect("mouse_clicked", self, "remove_from_bet")
 
 			
 			chip_position.x -= (texture.get_width() + 2) * x_offset
@@ -381,6 +379,9 @@ func draw_chips(chips_amount, parent_node, mode):
 		
 			chip.get_node("Sprite").set_texture(texture)
 			group_node.add_child(chip)
+
+			if i >= max_chips: 
+				break
 		
 		x_offset += 1
 		cur_stack += 1
@@ -441,7 +442,7 @@ func remove_from_bet(params):
 		bet -= int(chip.chip_value)
 		player.money += int(chip.chip_value)
 		
-		bet_chips = recalc_chips(bet)
+		bet_chips[chip.chip_value] -= 1
 		draw_player_chips()
 		draw_bet_chips()
 		$UI/GameUI/BetMoneyLabel.text = str(bet) + "$"
@@ -458,7 +459,7 @@ func add_to_bet(params):
 		if bet + int(chip.chip_value) <= max_bet:
 			bet += int(chip.chip_value)
 			player.money -= int(chip.chip_value)
-			bet_chips = recalc_chips(bet)
+			bet_chips[chip.chip_value] += 1
 			draw_player_chips()
 			draw_bet_chips()
 			$UI/GameUI/BetMoneyLabel.text = str(bet) + "$"
