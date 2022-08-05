@@ -138,6 +138,7 @@ script = ExtResource( 3 )
 z_index = 2
 
 [node name="Menu" type="Node2D" parent="UI"]
+visible = false
 z_index = 1
 
 [node name="gameover_sprite" type="Sprite" parent="UI/Menu"]
@@ -253,7 +254,7 @@ margin_right = 97.0
 margin_bottom = 357.0
 rect_pivot_offset = Vector2( 79, -38 )
 theme = SubResource( 5 )
-text = "Stand"
+text = "Bet"
 
 [node name="PlayerMoneyLabel" type="Label" parent="UI/GameUI"]
 margin_left = 239.0

@@ -1,5 +1,4 @@
 #TODO: Game shouldn't start until bet is fixed
-#TODO: Game over if money less 50
 #TODO: Take back chips if bet is not fixed
 
 extends Node2D
@@ -15,6 +14,7 @@ var max_chips = 15
 var max_bet = 5000
 
 var menu_mode = true
+var bet_is_set = false
 var menu_options = []
 var current_menu_option_index = 0
 var resume_menu_texture = preload("res://assets/Menu options/resume.png")
@@ -68,7 +68,7 @@ func _ready():
 
 
 func _process(_delta):
-	if !game_is_running && bet >= min_bet:		
+	if !game_is_running && bet_is_set:		
 		game_is_running = true
 		give_card_to_player()
 		give_card_to_player()
@@ -91,6 +91,7 @@ func _process(_delta):
 
 # (Re)init game
 func init():
+	reset_bet()
 	game_is_running = false
 
 	deck_cards_taken = []
@@ -124,6 +125,11 @@ func init():
 
 	$UI/GameUI/EnemyPointsLabel.hide()
 
+
+func reset_bet():
+	bet = 0
+	bet_is_set = false
+	$UI/GameUI/ReadyButton.text = "Bet"
 
 func start_game():
 	player.money = 5000
@@ -465,7 +471,6 @@ func recalc_chips(money):
 func check_bet():
 	if bet >= min_bet:
 		$UI/GameUI/ReadyButton.set_disabled(false)
-		$UI/GameUI/ReadyButton.text = "STAND"
 
 
 
@@ -476,7 +481,7 @@ func draw_bet_chips():
 func gameover():
 	current_menu_option_index = 0
 	update_menu()
-	
+
 	game_is_running = false
 	game_was_started = false
 	menu_mode = true
@@ -496,8 +501,14 @@ func _on_CardDeck_input_event(_viewport:Node, event:InputEvent, _shape_idx:int):
 
 
 func _on_ReadyButton_pressed():
-	player.set_ready(true)
-	$UI/GameUI/ReadyButton.text = "WAITING"
+	if !bet_is_set:
+		bet_is_set = true
+		$UI/GameUI/ReadyButton.text = "STAND"
+	else:
+		player.set_ready(true)
+		$UI/GameUI/ReadyButton.text = "WAITING"
+
+	
 
 
 func _on_AnimationPlayer_animation_finished(anim_name:String):
