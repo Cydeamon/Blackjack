@@ -26,15 +26,29 @@ func clear_cards():
 
 func calc_points():
 	var value = 0
+	var aces_amount = 0
 
 	for card in cards:
 		var min_value = card.card.get_card_min_value()
 		var max_value = card.card.get_card_max_value()
 
+		if max_value == 11 && min_value == 1:
+			aces_amount += 1
+
 		if value + max_value > 21:
 			value += min_value
 		else:
 			value += max_value
+
+		if value > 21:
+			for i in aces_amount:
+				value -= 10
+				aces_amount -= 1
+				i = 0
+
+				if value <= 21:
+					break
+
 
 	return value
 

@@ -300,6 +300,7 @@ func compare_results():
 		
 	if message == "blackjack":
 		player.money += bet + bet * 1.5;
+		message = "victory"
 
 	if message == "draw":
 		player.money += bet
@@ -308,9 +309,7 @@ func compare_results():
 		enemy.increase_limit()
 	else:
 		enemy.decrease_limit()
-
-	if message == "blackjack":
-		message = "victory"
+		
 
 
 func show_message(message):
@@ -535,6 +534,7 @@ func _on_ReadyButton_pressed():
 	else:
 		player.set_ready(true)
 		$UI/GameUI/ReadyButton.text = "WAITING"
+		$UI/GameUI/ReadyButton.set_disabled(true)
 
 	
 
