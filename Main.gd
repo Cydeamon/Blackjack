@@ -146,20 +146,29 @@ func update_menu():
 
 
 func select_next_menu_option():
-	current_menu_option_index += 1
+	while true:
+		current_menu_option_index += 1
 
-	if current_menu_option_index >= menu_options.size():
-		current_menu_option_index = 0
+		if current_menu_option_index >= menu_options.size():
+			current_menu_option_index = 0
+
+		if menu_options[current_menu_option_index].visible:
+			break;
 
 	update_menu()
 
 
 func select_prev_menu_option():
-	current_menu_option_index -= 1
 
-	if current_menu_option_index < 0:
-		current_menu_option_index = menu_options.size() - 1
+	while true:
+		current_menu_option_index -= 1
+	
+		if current_menu_option_index < 0:
+			current_menu_option_index = menu_options.size() - 1
 
+		if menu_options[current_menu_option_index].visible:
+			break;
+	
 	update_menu()
 
 
@@ -295,6 +304,8 @@ func compare_results():
 	else:
 		enemy.decrease_limit()
 
+	if message == "blackjack":
+		message = "victory"
 
 
 func show_message(message):
@@ -515,6 +526,11 @@ func process_menu_select():
 			close_menu()
 			start_game()
 			game_was_started = true
+			$UI/Menu/MenuOptions/new_game.visible = true
+		"new_game": 
+			init()
+			start_game()
+			close_menu()
 		"exit_game": 
 			get_tree().quit()
 
