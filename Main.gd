@@ -1,6 +1,3 @@
-#TODO: Game shouldn't start until bet is fixed
-#TODO: Take back chips if bet is not fixed
-
 extends Node2D
 
 var deck = []				# Deck (all 50 cards)
@@ -337,10 +334,10 @@ func show_message(message):
 	
 func draw_player_chips():
 	delete_children($PlayerChips)
-	draw_chips(get_player_chips(), $PlayerChips)
+	draw_chips(get_player_chips(), $PlayerChips, "player")
 	
 	
-func draw_chips(chips_amount, parent_node, connect_signals = true):
+func draw_chips(chips_amount, parent_node, mode):
 	var x_offset = 0
 	var y_offset = 0
 	var chips_in_row = 3
@@ -360,13 +357,20 @@ func draw_chips(chips_amount, parent_node, connect_signals = true):
 			var chip_position = Vector2.ZERO
 
 			chip.chip_value = chip_value
+			chip.connect("mouse_exited", self, "clear_note_text")
 
-			if connect_signals: 
-				chip.connect("mouse_exited", self, "clear_note_text")
+			if mode == "player": 
 				chip.connect("mouse_entered", self, "show_bet_note", [chip])
 
 				if i == amount - 1:
 					chip.connect("mouse_clicked", self, "add_to_bet")
+			
+			if mode == "bet": 
+				chip.connect("mouse_entered", self, "show_reduce_bet_note", [chip])
+
+				if i == amount - 1:
+					chip.connect("mouse_clicked", self, "remove_from_bet")
+
 			
 			chip_position.x -= (texture.get_width() + 2) * x_offset
 			chip_position.y -= ((texture.get_height() + 2) * y_offset) + i * 2
@@ -425,20 +429,43 @@ func clear_note_text():
 
 
 
-func add_to_bet(params):
-	var chip = params[0]
+func show_reduce_bet_note(chip):
+	$UI/GameUI/NoteLabel.text = "Remove " + str(chip.chip_value) + "$ from the bet"
+	$SoundsPlayer.stream = sounds_chips[randi() % (sounds_chips.size() - 1)]
+	$SoundsPlayer.play()
 
-	if bet + int(chip.chip_value) <= max_bet:
-		bet += int(chip.chip_value)
-		player.money -= int(chip.chip_value)
+func remove_from_bet(params):
+	if !bet_is_set:
+		var chip = params[0]
+
+		bet -= int(chip.chip_value)
+		player.money += int(chip.chip_value)
+		
 		bet_chips = recalc_chips(bet)
 		draw_player_chips()
 		draw_bet_chips()
 		$UI/GameUI/BetMoneyLabel.text = str(bet) + "$"
 		$UI/GameUI/PlayerMoneyLabel.text = str(player.money) + "$"
 		check_bet()
-	else:
-		$UI/GameUI/NoteLabel.text = "Max bet is " + str(max_bet) + "$"
+
+		if bet < min_bet:
+			$UI/GameUI/NoteLabel.text = "Minimal bet is " + str(min_bet) + "$"
+
+func add_to_bet(params):
+	if !bet_is_set:
+		var chip = params[0]
+
+		if bet + int(chip.chip_value) <= max_bet:
+			bet += int(chip.chip_value)
+			player.money -= int(chip.chip_value)
+			bet_chips = recalc_chips(bet)
+			draw_player_chips()
+			draw_bet_chips()
+			$UI/GameUI/BetMoneyLabel.text = str(bet) + "$"
+			$UI/GameUI/PlayerMoneyLabel.text = str(player.money) + "$"
+			check_bet()
+		else:
+			$UI/GameUI/NoteLabel.text = "Max bet is " + str(max_bet) + "$"
 
 func recalc_chips(money):	
 	var prev_chip_value = null
@@ -476,7 +503,7 @@ func check_bet():
 
 func draw_bet_chips():
 	delete_children($BetChips)
-	draw_chips(bet_chips, $BetChips, false)
+	draw_chips(bet_chips, $BetChips, "bet")
 
 func gameover():
 	current_menu_option_index = 0
