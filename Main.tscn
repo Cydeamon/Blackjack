@@ -332,10 +332,11 @@ position = Vector2( 631, 319 )
 one_shot = true
 
 [node name="SoundsPlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -3.64
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 14 )
-volume_db = -16.12
+volume_db = -4.16
 autoplay = true
 
 [node name="WinLoseSounds" type="AudioStreamPlayer" parent="."]
