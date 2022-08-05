@@ -507,3 +507,7 @@ func _on_menu_option_mouse_event(viewport:Node, event:InputEvent, shape_idx:int,
 
 	if event is InputEventMouseMotion:
 		update_menu()
+
+
+func _on_MusicPlayer_finished():
+	$MusicPlayer.play(0)

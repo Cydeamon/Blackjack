@@ -325,3 +325,4 @@ autoplay = true
 [connection signal="input_event" from="CardDeck" to="." method="_on_CardDeck_input_event"]
 [connection signal="mouse_entered" from="CardDeck" to="." method="_on_CardDeck_mouse_entered"]
 [connection signal="mouse_exited" from="CardDeck" to="." method="clear_note_text"]
+[connection signal="finished" from="MusicPlayer" to="." method="_on_MusicPlayer_finished"]
