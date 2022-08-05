@@ -1,5 +1,4 @@
 #TODO: Game shouldn't start until bet is fixed
-#FIXME: Recalc bet chips
 #TODO: Game over if money less 50
 #TODO: New game option
 #TODO: Take back chips if bet is not fixed
@@ -376,32 +375,8 @@ func show_bet_note(chip):
 
 	
 func get_player_chips():
-	var result = {
-		500: 0,
-		100: 0,
-		25:  0,
-		10:  0,
-		5:   0,
-		1:   0
-	}	
-	
-	var player_money = player.money
-	var prev_chip_value = null
-	
-	for chip_value in result:
-		var chips_amount = int(player_money / int(chip_value))
-		player_money -= chips_amount * chip_value
-		
-		if chips_amount <= 2 && prev_chip_value && result[prev_chip_value] > 1:
-			var temp_money = int(prev_chip_value) * 1
-			result[prev_chip_value] -= 1
-			chips_amount = int(temp_money / int(chip_value))
-			temp_money -= chips_amount * int(chip_value)
-			player_money += temp_money
-		
-		result[chip_value] = chips_amount
-		prev_chip_value = chip_value
-	
+	var player_money = player.money	
+	var result = recalc_chips(player_money)
 
 	if result[500] > max_chips:
 		result[500] = max_chips
@@ -437,7 +412,7 @@ func add_to_bet(params):
 	if bet + int(chip.chip_value) <= max_bet:
 		bet += int(chip.chip_value)
 		player.money -= int(chip.chip_value)
-		bet_chips[chip.chip_value] += 1
+		bet_chips = recalc_chips(bet)
 		draw_player_chips()
 		draw_bet_chips()
 		$UI/GameUI/BetMoneyLabel.text = str(bet) + "$"
@@ -446,6 +421,32 @@ func add_to_bet(params):
 	else:
 		$UI/GameUI/NoteLabel.text = "Max bet is " + str(max_bet) + "$"
 
+func recalc_chips(money):	
+	var prev_chip_value = null
+	var chips = {
+		500: 0,
+		100: 0,
+		25:  0,
+		10:  0,
+		5:   0,
+		1:   0
+	}	
+
+	for chip_value in chips:
+		var chips_amount = int(money / int(chip_value))
+		money -= chips_amount * chip_value
+		
+		if chips_amount <= 2 && prev_chip_value && chips[prev_chip_value] > 1:
+			var temp_money = int(prev_chip_value) * 1
+			chips[prev_chip_value] -= 1
+			chips_amount = int(temp_money / int(chip_value))
+			temp_money -= chips_amount * int(chip_value)
+			money += temp_money
+		
+		chips[chip_value] = chips_amount
+		prev_chip_value = chip_value
+
+	return chips
 
 
 func check_bet():
