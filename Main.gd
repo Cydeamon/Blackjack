@@ -431,32 +431,35 @@ func _on_CardDeck_mouse_entered():
 func _on_ReadyButton_mouse_entered():
 	$UI/GameUI/NoteLabel.text = "No more cards"
 
-
-func _on_menu_option_mouse_entered(menu_index):
-	print("MOUSE")
-	current_menu_option_index = menu_index
-	update_menu()
-
-
 func _unhandled_input(event):
 	if menu_mode && event.is_action_pressed("ui_down"):
 		select_next_menu_option()
-	
 	elif menu_mode && event.is_action_pressed("ui_up"):
 		select_prev_menu_option()
-	
 	elif menu_mode && event.is_action_pressed("ui_cancel") && game_was_started:
 		close_menu()
-	
 	elif !menu_mode && event.is_action_pressed("ui_cancel"):
 		init_menu()
 		$UI/Menu/MenuOptions/start_resume_game.texture = resume_menu_texture
-	
+
 	elif menu_mode && event.is_action_pressed("ui_accept"):
-		match (menu_options[current_menu_option_index].name):
-			"start_resume_game": 
-				close_menu()
-				start_game()
-				game_was_started = true
-			"exit_game": 
-				get_tree().quit()
+		process_menu_select()
+		
+func process_menu_select():
+	match (menu_options[current_menu_option_index].name):
+		"start_resume_game": 
+			close_menu()
+			start_game()
+			game_was_started = true
+		"exit_game": 
+			get_tree().quit()
+
+
+func _on_menu_option_mouse_event(viewport:Node, event:InputEvent, shape_idx:int, menu_index:int):
+	current_menu_option_index = menu_index
+	
+	if event is InputEventMouseButton && event.is_pressed():
+		process_menu_select()
+
+	if event is InputEventMouseMotion:
+		update_menu()

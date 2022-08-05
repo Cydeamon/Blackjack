@@ -147,17 +147,13 @@ position = Vector2( 320, 180 )
 z_index = 1
 texture = ExtResource( 9 )
 
-[node name="ColorRect" type="ColorRect" parent="UI/Menu"]
-margin_right = 640.0
-margin_bottom = 361.0
-color = Color( 0, 0, 0, 0.74902 )
-
 [node name="current_option_indicator" type="Sprite" parent="UI/Menu"]
 z_index = 2
 texture = ExtResource( 12 )
 centered = false
 
 [node name="MenuOptions" type="Node2D" parent="UI/Menu"]
+process_priority = 1
 position = Vector2( 29, 136 )
 z_index = 1
 
@@ -166,9 +162,12 @@ texture = ExtResource( 10 )
 centered = false
 
 [node name="Area2D" type="Area2D" parent="UI/Menu/MenuOptions/start_resume_game"]
+z_index = 50
+z_as_relative = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Menu/MenuOptions/start_resume_game/Area2D"]
 position = Vector2( 56.5, 6 )
+z_index = 5
 shape = SubResource( 11 )
 
 [node name="exit_game" type="Sprite" parent="UI/Menu/MenuOptions"]
@@ -178,9 +177,12 @@ offset = Vector2( 0, 20 )
 
 [node name="Area2D" type="Area2D" parent="UI/Menu/MenuOptions/exit_game"]
 position = Vector2( 0, 20 )
+z_index = 50
+z_as_relative = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UI/Menu/MenuOptions/exit_game/Area2D"]
 position = Vector2( 56.5, 6 )
+z_index = 5
 shape = SubResource( 11 )
 
 [node name="GameUI" type="Node" parent="UI"]
@@ -304,8 +306,8 @@ position = Vector2( 631, 319 )
 [node name="GiveEnemyCardTimer" type="Timer" parent="Timers"]
 one_shot = true
 
-[connection signal="mouse_entered" from="UI/Menu/MenuOptions/start_resume_game/Area2D" to="." method="_on_menu_option_mouse_entered" binds= [ "0" ]]
-[connection signal="mouse_entered" from="UI/Menu/MenuOptions/exit_game/Area2D" to="." method="_on_menu_option_mouse_entered" binds= [ 1 ]]
+[connection signal="input_event" from="UI/Menu/MenuOptions/start_resume_game/Area2D" to="." method="_on_menu_option_mouse_event" binds= [ 0 ]]
+[connection signal="input_event" from="UI/Menu/MenuOptions/exit_game/Area2D" to="." method="_on_menu_option_mouse_event" binds= [ 1 ]]
 [connection signal="mouse_entered" from="UI/GameUI/ReadyButton" to="." method="_on_ReadyButton_mouse_entered"]
 [connection signal="mouse_exited" from="UI/GameUI/ReadyButton" to="." method="clear_note_text"]
 [connection signal="pressed" from="UI/GameUI/ReadyButton" to="." method="_on_ReadyButton_pressed"]
