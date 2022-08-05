@@ -1,6 +1,5 @@
 #TODO: Game shouldn't start until bet is fixed
 #TODO: Game over if money less 50
-#TODO: New game option
 #TODO: Take back chips if bet is not fixed
 
 extends Node2D
@@ -19,6 +18,7 @@ var menu_mode = true
 var menu_options = []
 var current_menu_option_index = 0
 var resume_menu_texture = preload("res://assets/Menu options/resume.png")
+var start_menu_texture = preload("res://assets/Menu options/start.png")
 
 
 var player = Player.new()
@@ -126,6 +126,8 @@ func init():
 
 
 func start_game():
+	player.money = 5000
+	draw_player_chips()
 	init_deck()
 	init()
 
@@ -471,6 +473,16 @@ func draw_bet_chips():
 	delete_children($BetChips)
 	draw_chips(bet_chips, $BetChips, false)
 
+func gameover():
+	game_is_running = false
+	game_was_started = false
+	menu_mode = true
+
+	$UI/Menu/gameover_sprite.visible = true
+	$UI/Menu/MenuOptions/start_resume_game.texture = start_menu_texture
+	$UI/Menu/MenuOptions/new_game.visible = false
+	$UI/Menu.visible = true
+
 ###########################################################################################
 ######################################### SIGNALS #########################################
 
@@ -486,18 +498,22 @@ func _on_ReadyButton_pressed():
 
 
 func _on_AnimationPlayer_animation_finished(anim_name:String):
+	if player.money < min_bet:
+		gameover()
+
 	if anim_name == "show_victory_message":
 		$AnimationPlayer.seek(0)
 		move_cards_to_center(-200, enemy.get_cards())
 		move_cards_to_center(get_viewport().get_visible_rect().size.y + 200, player.get_cards())
 
+		init()
 		var t = Timer.new()
 		t.set_wait_time(0.5)
 		t.set_one_shot(true)
 		self.add_child(t)
 		t.start()
 		yield(t, "timeout")
-		init()
+	
 
 func _on_CardDeck_mouse_entered():
 	$UI/GameUI/NoteLabel.text = "Take a card from the deck"
