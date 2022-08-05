@@ -562,7 +562,10 @@ func _on_CardDeck_mouse_entered():
 
 
 func _on_ReadyButton_mouse_entered():
-	$UI/GameUI/NoteLabel.text = "No more cards"
+	if bet_is_set:
+		$UI/GameUI/NoteLabel.text = "No more cards"
+	else:
+		$UI/GameUI/NoteLabel.text = "Fix bet"
 
 func _unhandled_input(event):
 	if menu_mode && event.is_action_pressed("ui_down"):
