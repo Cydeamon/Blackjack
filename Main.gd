@@ -298,13 +298,13 @@ func show_message(message):
 	$UI/GameUI/VictoryMessage.show()
 
 	if message == "draw":
-		$SoundsPlayer.stream = sound_draw
+		$WinLoseSounds.stream = sound_draw
 	elif message == "victory":
-		$SoundsPlayer.stream = sound_win
+		$WinLoseSounds.stream = sound_win
 	elif message == "lost":
-		$SoundsPlayer.stream = sound_lose
+		$WinLoseSounds.stream = sound_lose
 
-	$SoundsPlayer.play()
+	$WinLoseSounds.play()
 
 	$UI/GameUI/VictoryMessage.set_texture(load("res://assets/" + message + "_msg.png"))
 	$AnimationPlayer.current_animation = "show_victory_message"
