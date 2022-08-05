@@ -1,3 +1,13 @@
+#FIXME: Show maximum 10 chips at the time
+#TODO: Game shouldn't start until bet is fixed
+#TODO: Max bet is 5000
+#TODO: Music
+#TODO: Sound effects
+#FIXME: Recalc bet chips
+#TODO: Game over if money less 50
+#TODO: New game option
+#TODO: Take back chips if bet is not fixed
+
 extends Node2D
 
 var deck = []				# Deck (all 50 cards)
@@ -26,6 +36,22 @@ var chips_textures = {
 	10: preload("res://assets/Chips/chip_10.png"),
 	5: preload("res://assets/Chips/chip_5.png"),
 	1: preload("res://assets/Chips/chip_1.png")
+}
+
+### SOUNDS
+var sound_win = preload("res://assets/sounds/win.wav")
+var sound_lose = preload("res://assets/sounds/lose.wav")
+var sound_draw = preload("res://assets/sounds/draw.wav")
+
+var sounds_chips = {
+	0: preload("res://assets/sounds/chip1.wav"),
+	1: preload("res://assets/sounds/chip2.wav")
+}
+
+var sounds_cards = {
+	0: preload("res://assets/sounds/card1.wav"),
+	1: preload("res://assets/sounds/card2.wav"),
+	2: preload("res://assets/sounds/card3.wav")
 }
 
 
@@ -271,6 +297,15 @@ func show_message(message):
 	$UI/GameUI/MessageBackground.show()
 	$UI/GameUI/VictoryMessage.show()
 
+	if message == "draw":
+		$SoundsPlayer.stream = sound_draw
+	elif message == "victory":
+		$SoundsPlayer.stream = sound_win
+	elif message == "lost":
+		$SoundsPlayer.stream = sound_lose
+
+	$SoundsPlayer.play()
+
 	$UI/GameUI/VictoryMessage.set_texture(load("res://assets/" + message + "_msg.png"))
 	$AnimationPlayer.current_animation = "show_victory_message"
 	$AnimationPlayer.play()
@@ -327,6 +362,8 @@ func draw_chips(chips_amount, parent_node, connect_signals = true):
 
 func show_bet_note(chip):
 	$UI/GameUI/NoteLabel.text = "Add " + str(chip.chip_value) + "$ to the bet and exchange chips"
+	$SoundsPlayer.stream = sounds_chips[randi() % (sounds_chips.size() - 1)]
+	$SoundsPlayer.play()
 
 
 	
@@ -426,6 +463,8 @@ func _on_AnimationPlayer_animation_finished(anim_name:String):
 
 func _on_CardDeck_mouse_entered():
 	$UI/GameUI/NoteLabel.text = "Take a card from the deck"
+	$SoundsPlayer.stream = sounds_cards[randi() % (sounds_cards.size() - 1)]
+	$SoundsPlayer.play()
 
 
 func _on_ReadyButton_mouse_entered():
