@@ -1,4 +1,3 @@
-#FIXME: Show maximum 10 chips at the time
 #TODO: Game shouldn't start until bet is fixed
 #TODO: Max bet is 5000
 #TODO: Music
@@ -17,6 +16,7 @@ var game_is_running = false
 var bet = 0
 var min_bet = 50
 var game_was_started = false
+var max_chips = 15
 
 var menu_mode = true
 var menu_options = []
@@ -401,6 +401,20 @@ func get_player_chips():
 		result[chip_value] = chips_amount
 		prev_chip_value = chip_value
 	
+
+	if result[500] > max_chips:
+		result[500] = max_chips
+	if result[100] > max_chips:
+		result[100] = max_chips
+	if result[25] > max_chips:
+		result[25] = max_chips
+	if result[10] > max_chips:
+		result[10] = max_chips
+	if result[5] > max_chips:
+		result[5] = max_chips
+	if result[1] > max_chips:
+		result[1] = max_chips
+
 	return result 
 
 
