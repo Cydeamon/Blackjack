@@ -474,6 +474,9 @@ func draw_bet_chips():
 	draw_chips(bet_chips, $BetChips, false)
 
 func gameover():
+	current_menu_option_index = 0
+	update_menu()
+	
 	game_is_running = false
 	game_was_started = false
 	menu_mode = true
