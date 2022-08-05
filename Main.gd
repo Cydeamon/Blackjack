@@ -187,8 +187,12 @@ func init_deck():
 
 
 # Give card to player and move it to center of screen
-func give_card_to_player():
+func give_card_to_player():	
+	
 	if game_is_running && !player.is_ready:
+		$SoundsPlayer.stream = sounds_cards[randi() % (sounds_cards.size() - 1)]
+		$SoundsPlayer.play()
+		
 		var card = preload('Card.tscn').instance()
 		card.position = $CardDeck/CardDeckSprite.position
 		card.set_card(take_random_card_from_deck())
@@ -204,7 +208,10 @@ func give_card_to_player():
 
 # Give card to enemy and move it to center of screen
 func give_card_to_enemy(front_face_visible = false):
-	if game_is_running:
+	if game_is_running:		
+		$SoundsPlayer.stream = sounds_cards[randi() % (sounds_cards.size() - 1)]
+		$SoundsPlayer.play()
+
 		var card = preload('Card.tscn').instance()
 		card.position = $CardsSpawnPosition.position
 		card.set_front_face_visible(front_face_visible)
@@ -463,8 +470,6 @@ func _on_AnimationPlayer_animation_finished(anim_name:String):
 
 func _on_CardDeck_mouse_entered():
 	$UI/GameUI/NoteLabel.text = "Take a card from the deck"
-	$SoundsPlayer.stream = sounds_cards[randi() % (sounds_cards.size() - 1)]
-	$SoundsPlayer.play()
 
 
 func _on_ReadyButton_mouse_entered():
