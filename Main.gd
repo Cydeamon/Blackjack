@@ -354,6 +354,9 @@ func draw_chips(chips_amount, parent_node, connect_signals = true):
 			
 			chip_position.x -= (texture.get_width() + 2) * x_offset
 			chip_position.y -= ((texture.get_height() + 2) * y_offset) + i * 2
+
+			chip_position.x += randi() % 4 - 2
+
 			chip.position = chip_position
 		
 			chip.get_node("Sprite").set_texture(texture)
