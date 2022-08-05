@@ -1,7 +1,4 @@
 #TODO: Game shouldn't start until bet is fixed
-#TODO: Max bet is 5000
-#TODO: Music
-#TODO: Sound effects
 #FIXME: Recalc bet chips
 #TODO: Game over if money less 50
 #TODO: New game option
@@ -17,6 +14,7 @@ var bet = 0
 var min_bet = 50
 var game_was_started = false
 var max_chips = 15
+var max_bet = 5000
 
 var menu_mode = true
 var menu_options = []
@@ -435,14 +433,18 @@ func clear_note_text():
 
 func add_to_bet(params):
 	var chip = params[0]
-	bet += int(chip.chip_value)
-	player.money -= int(chip.chip_value)
-	bet_chips[chip.chip_value] += 1
-	draw_player_chips()
-	draw_bet_chips()
-	$UI/GameUI/BetMoneyLabel.text = str(bet) + "$"
-	$UI/GameUI/PlayerMoneyLabel.text = str(player.money) + "$"
-	check_bet()
+
+	if bet + int(chip.chip_value) <= max_bet:
+		bet += int(chip.chip_value)
+		player.money -= int(chip.chip_value)
+		bet_chips[chip.chip_value] += 1
+		draw_player_chips()
+		draw_bet_chips()
+		$UI/GameUI/BetMoneyLabel.text = str(bet) + "$"
+		$UI/GameUI/PlayerMoneyLabel.text = str(player.money) + "$"
+		check_bet()
+	else:
+		$UI/GameUI/NoteLabel.text = "Max bet is " + str(max_bet) + "$"
 
 
 
