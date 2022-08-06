@@ -25,16 +25,7 @@ func get_rank_str():
 	return Rank.keys()[index]
 
 
-func get_card_min_value():
-	if rank == Rank.RANK_A:
-		return 1
-	elif rank == Rank.RANK_J || rank == Rank.RANK_Q || rank == Rank.RANK_K:
-		return 10
-	else: 
-		return int(rank)
-
-
-func get_card_max_value():
+func get_card_value():
 	if rank == Rank.RANK_A:
 		return 11
 	elif rank == Rank.RANK_J || rank == Rank.RANK_Q || rank == Rank.RANK_K:

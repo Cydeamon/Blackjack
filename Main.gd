@@ -290,17 +290,13 @@ func compare_results():
 	else:
 		message = "lost"
 
-	if message == "victory" && player_score == 21 && player.cards.size() == 2:
-		message = "blackjack"
+	if message == "victory":
+		if player_score == 21 && player.cards.size() == 2:
+			player.money += bet * 2.5;
+		else:
+			player.money += bet * 2
 
 	show_message(message)
-
-	if message == "victory":
-		player.money += bet*2
-		
-	if message == "blackjack":
-		player.money += bet + bet * 1.5;
-		message = "victory"
 
 	if message == "draw":
 		player.money += bet
@@ -575,6 +571,7 @@ func _unhandled_input(event):
 	elif menu_mode && event.is_action_pressed("ui_cancel") && game_was_started:
 		close_menu()
 	elif !menu_mode && event.is_action_pressed("ui_cancel"):
+		current_menu_option_index = 0
 		init_menu()
 		$UI/Menu/MenuOptions/start_resume_game.texture = resume_menu_texture
 
@@ -588,6 +585,7 @@ func process_menu_select():
 			start_game()
 			game_was_started = true
 			$UI/Menu/MenuOptions/new_game.visible = true
+			$UI/Menu/gameover_sprite.visible = false
 		"new_game": 
 			init()
 			start_game()

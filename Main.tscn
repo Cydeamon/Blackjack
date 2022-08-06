@@ -138,7 +138,6 @@ script = ExtResource( 3 )
 z_index = 2
 
 [node name="Menu" type="Node2D" parent="UI"]
-visible = false
 z_index = 1
 
 [node name="gameover_sprite" type="Sprite" parent="UI/Menu"]
@@ -346,7 +345,7 @@ autoplay = true
 
 [connection signal="input_event" from="UI/Menu/MenuOptions/start_resume_game/Area2D" to="." method="_on_menu_option_mouse_event" binds= [ 0 ]]
 [connection signal="input_event" from="UI/Menu/MenuOptions/exit_game/Area2D" to="." method="_on_menu_option_mouse_event" binds= [ 1 ]]
-[connection signal="input_event" from="UI/Menu/MenuOptions/new_game/Area2D" to="." method="_on_menu_option_mouse_event" binds= [ 3 ]]
+[connection signal="input_event" from="UI/Menu/MenuOptions/new_game/Area2D" to="." method="_on_menu_option_mouse_event" binds= [ 2 ]]
 [connection signal="mouse_entered" from="UI/GameUI/ReadyButton" to="." method="_on_ReadyButton_mouse_entered"]
 [connection signal="mouse_exited" from="UI/GameUI/ReadyButton" to="." method="clear_note_text"]
 [connection signal="pressed" from="UI/GameUI/ReadyButton" to="." method="_on_ReadyButton_pressed"]
