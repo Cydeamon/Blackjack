@@ -478,7 +478,7 @@ func recalc_chips(money):
 		var chips_amount = int(money / int(chip_value))
 		money -= chips_amount * chip_value
 		
-		if chips_amount <= 2 && prev_chip_value && chips[prev_chip_value] > 1:
+		if chips_amount <= 2 && prev_chip_value && chips[prev_chip_value]:
 			var temp_money = int(prev_chip_value) * 1
 			chips[prev_chip_value] -= 1
 			chips_amount = int(temp_money / int(chip_value))
